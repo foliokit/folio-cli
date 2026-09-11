@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "folio-cli"
+dynamic = ["version"]
+description = "Command-line client for Wealthfolio's AI Agent Access (MCP) server"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+# 3.10: socket timeouts became TimeoutError, which the client relies on.
+requires-python = ">=3.10"
+authors = [{ name = "Josanshuo" }]
+keywords = ["wealthfolio", "mcp", "cli", "portfolio", "investing"]
+classifiers = [
+    "Environment :: Console",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Topic :: Office/Business :: Financial :: Investment",
+]
+
+[project.urls]
+Repository = "https://github.com/foliokit/folio-cli"
+Issues = "https://github.com/foliokit/folio-cli/issues"
+
+[project.scripts]
+folio = "folio.cli:main"
+
+[tool.setuptools.dynamic]
+version = { attr = "folio.__version__" }
+
+[tool.setuptools.packages.find]
+include = ["folio*"]
+exclude = ["folio.tests*"]
