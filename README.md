@@ -4,17 +4,23 @@ A command-line client for [Wealthfolio](https://wealthfolio.app/)'s **AI Agent
 Access** server — the MCP endpoint the desktop app runs on `127.0.0.1:8639`
 (and a self-hosted server on `/mcp`).
 
-Use it from scripts, or hand it to an AI coding agent instead of wiring the
-endpoint in as an MCP server:
+Use it from a terminal, scripts or scheduled jobs, or hand it to an AI coding
+agent instead of wiring the endpoint in as an MCP server:
 
 - **Nothing to connect up front.** An MCP server that is down when an agent
   session starts tends to stay unavailable for the whole session. folio
   connects per call, so opening Wealthfolio later just works.
+- **Bulk work stays out of the conversation.** A script can make dozens of
+  calls — every transfer, a search per date window — and hand the agent only
+  the result. Through MCP, each tool result lands in the agent's context.
 - **Payloads come from files.** A few hundred import rows are
   `--activities @rows.json` or `@rows.csv`, not JSON written inline into a
   tool call.
 - **Guards a silent import trap.** Rows carrying a `subtype` are refused before
   they reach a tool that would drop it without an error (see [Limits](#limits)).
+
+For a quick one-off question it behaves the same as the MCP server; the
+difference shows in bulk work and imports.
 
 It is a client, not a second backend: every call goes through Wealthfolio's
 own services, token scopes and audit log. It never opens the database file.
@@ -106,6 +112,9 @@ folio can do exactly what Wealthfolio's agent tools can, nothing more:
   by `commit_activity_drafts`, which do keep it.
 - No tool links or unlinks transfers, updates or deletes activities, edits
   quotes, or makes backups. Those stay in the app.
+- **It sees only what the tools return.** `search_activities` rows carry no
+  transfer-link state, for example, so folio can't tell which transfers are
+  already linked. `get_health_status` lists the unmatched ones, as text.
 
 ## Develop
 
